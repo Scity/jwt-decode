@@ -1,0 +1,22 @@
+{
+  "name": "jwt-decode",
+  "version": "1.0.0",
+  "authors": [
+    "arnaud.delcasse@scity.fr"
+  ],
+  "description": "Polymer web component for JWT token decoding",
+  "keywords": [
+    "JWT", "web components", "Polymer"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "^1.0.0"
+  }
+}

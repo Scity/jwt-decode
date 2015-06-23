@@ -1,0 +1,70 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<script>
+urlBase64Decode = function(str) {
+	var output = str.replace(/-/g, '+').replace(/_/g, '/');
+	switch (output.length % 4) {
+	  case 0: { break; }
+	  case 2: { output += '=='; break; }
+	  case 3: { output += '='; break; }
+	  default: {
+	    throw 'Illegal base64url string!';
+	  }
+	}
+	return decodeURIComponent(escape(window.atob(output))); //polifyll https://github.com/davidchambers/Base64.js
+};
+
+Polymer({
+	is: "jwt-decode",
+
+	properties: {
+		token: String,
+		decodedToken: {
+			type: Object,
+			//readOnly: true,
+			notify: true,
+			computed: 'decodeToken(token)'
+		},
+		isValid: {
+			type: Boolean,
+			value: false,
+			//readOnly: true,
+			notify: true,
+			computed: 'isItValid(decodedToken)'
+		}
+	},
+
+	decodeToken: function(token){
+		if(token === undefined || token === null){
+			return undefined;
+		}
+		var parts = token.split('.');
+		if (parts.length !== 3) {
+			return undefined;
+		}
+		var decoded = urlBase64Decode(parts[1]);
+		if (!decoded) {
+			return undefined;
+		}
+		return JSON.parse(decoded);
+	},
+
+	isItValid: function(decodedToken){
+		if(!decodedToken){
+			return false;
+		}
+		if(!decodedToken.exp){
+			return true;
+		}
+
+		var d = new Date(0); // The 0 here is the key, which sets the date to the epoch
+	  d.setUTCSeconds(decodedToken.exp);
+
+	  if (!d) {
+      return true;
+    }
+
+    return (d.valueOf() > new Date().valueOf());
+	}
+});
+</script>
